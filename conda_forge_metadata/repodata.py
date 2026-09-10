@@ -16,8 +16,6 @@ from urllib.request import urlretrieve
 
 import requests
 
-from conda_forge_metadata.deprecations import deprecated
-
 logger = getLogger(__name__)
 
 SUBDIRS = (
@@ -130,26 +128,6 @@ def repodata(subdir: str) -> dict[str, Any]:
     assert subdir in SUBDIRS
     path = fetch_repodata(subdirs=(subdir,))[0]
     return json.loads(path.read_text())
-
-
-@deprecated(
-    deprecate_in="0.16.0",
-    remove_in="2026.8.1",
-    addendum=(
-        "Use `conda_forge_metadata.repodata.aggregated(reports="
-        '["artifacts", "names"]).values()` instead.'
-    ),
-)
-def n_artifacts(labels: Iterable[str] = ("main",)) -> tuple[int, int]:
-    """
-    Deprecated. Use `aggregated(reports=["artifacts", "names"]).values()`.
-
-    To get _all_ artifacts ever published, use `n_artifacts(all_labels())`.
-
-    Returns number of artifacts and number of unique package names.
-    """
-    result = aggregated(reports=["artifacts", "names"], labels=labels)
-    return result["artifacts"], result["names"]
 
 
 def aggregated(
